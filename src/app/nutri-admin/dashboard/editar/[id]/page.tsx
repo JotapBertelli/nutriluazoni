@@ -1,26 +1,26 @@
 import { Leaf } from 'lucide-react'
 import Link from 'next/link'
+import { notFound } from 'next/navigation'
 import PostForm from '@/components/PostForm'
+import { createSupabaseServerClient } from '@/lib/supabase-server'
 
 interface Props {
   params: Promise<{ id: string }>
 }
 
-const mockPost = {
-  id: '1',
-  title: '5 Alimentos que Impulsionam sua Energia no Dia a Dia',
-  slug: 'alimentos-que-impulsionam-energia',
-  summary: 'Descubra quais alimentos naturais podem te ajudar a manter os níveis de energia elevados durante o dia.',
-  content: `## Introdução\n\nManter os níveis de energia ao longo do dia é um dos maiores desafios da vida moderna.\n\n## 1. Aveia\n\nA aveia é uma excelente fonte de carboidratos complexos e fibras solúveis.\n\n## Conclusão\n\nMais do que focar em alimentos isolados, o segredo está no padrão alimentar como um todo.`,
-  image_url: 'https://images.unsplash.com/photo-1512621776951-a57141f2eefd?w=600&auto=format&fit=crop&q=80',
-  category: 'Alimentação',
-  published: true,
-  created_at: new Date().toISOString(),
-  updated_at: new Date().toISOString(),
-}
-
 export default async function EditarArtigoPage({ params }: Props) {
   const { id } = await params
+  const supabase = await createSupabaseServerClient()
+
+  const { data: post, error } = await supabase
+    .from('posts')
+    .select('*')
+    .eq('id', id)
+    .single()
+
+  if (error || !post) {
+    notFound()
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 flex">
@@ -52,7 +52,7 @@ export default async function EditarArtigoPage({ params }: Props) {
 
       {/* Content */}
       <main className="ml-60 flex-1 p-8">
-        <PostForm initialData={mockPost} postId={id} />
+        <PostForm initialData={post} postId={id} />
       </main>
     </div>
   )
