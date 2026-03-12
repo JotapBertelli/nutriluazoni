@@ -70,7 +70,7 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
 
   if (saved) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
+      <div className="flex flex-col items-center justify-center py-20 text-center px-4">
         <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mb-4">
           <CheckCircle className="w-8 h-8 text-green-600" />
         </div>
@@ -83,28 +83,27 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
   return (
     <div>
       {/* Page Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-6 sm:mb-8">
         <div className="flex items-center gap-3">
           <Link
             href="/nutri-admin/dashboard"
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors shrink-0"
           >
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">
+            <h1 className="text-xl sm:text-2xl font-bold text-gray-900">
               {postId ? 'Editar Artigo' : 'Novo Artigo'}
             </h1>
-            <p className="text-gray-500 text-sm">Preencha os campos para {postId ? 'atualizar' : 'publicar'} o artigo</p>
+            <p className="text-gray-500 text-xs sm:text-sm">Preencha os campos para {postId ? 'atualizar' : 'publicar'} o artigo</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          {/* Tab Toggle */}
+        <div className="flex items-center gap-3 ml-11 sm:ml-0">
           <div className="flex bg-gray-100 rounded-lg p-1">
             <button
               onClick={() => setActiveTab('edit')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
+              className={`px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors ${
                 activeTab === 'edit' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -112,7 +111,7 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
             </button>
             <button
               onClick={() => setActiveTab('preview')}
-              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
+              className={`px-3 sm:px-4 py-1.5 rounded-md text-sm font-medium transition-colors flex items-center gap-1.5 ${
                 activeTab === 'preview' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
@@ -131,9 +130,9 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
 
       {activeTab === 'preview' ? (
         /* Preview Tab */
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-8">
           {form.image_url && (
-            <div className="h-64 rounded-xl overflow-hidden mb-6">
+            <div className="h-40 sm:h-64 rounded-xl overflow-hidden mb-6">
               <img src={form.image_url} alt={form.title} className="w-full h-full object-cover" />
             </div>
           )}
@@ -142,11 +141,11 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
               {form.category}
             </span>
           )}
-          <h1 className="text-3xl font-bold text-green-900 mb-3" style={{ fontFamily: 'Playfair Display, serif' }}>
+          <h1 className="text-2xl sm:text-3xl font-bold text-green-900 mb-3" style={{ fontFamily: 'Playfair Display, serif' }}>
             {form.title || 'Título do artigo'}
           </h1>
           {form.summary && (
-            <p className="text-green-800 font-medium border-l-4 border-green-500 pl-4 mb-6 leading-relaxed">
+            <p className="text-green-800 font-medium border-l-4 border-green-500 pl-4 mb-6 leading-relaxed text-sm sm:text-base">
               {form.summary}
             </p>
           )}
@@ -156,11 +155,11 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
         </div>
       ) : (
         /* Edit Tab */
-        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <form onSubmit={handleSubmit} className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-5">
+          <div className="lg:col-span-2 space-y-4 sm:space-y-5">
             {/* Title */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
               <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                 <FileText className="w-4 h-4 text-green-600" />
                 Título do artigo *
@@ -170,27 +169,27 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
                 required
                 value={form.title}
                 onChange={(e) => setForm({ ...form, title: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 font-medium text-lg transition-colors"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 font-medium text-base sm:text-lg transition-colors"
                 placeholder="Ex: 5 Alimentos que Transformam sua Saúde"
               />
             </div>
 
             {/* Summary */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
               <label className="block text-sm font-semibold text-gray-700 mb-2">Resumo *</label>
               <textarea
                 required
                 rows={3}
                 value={form.summary}
                 onChange={(e) => setForm({ ...form, summary: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 resize-none transition-colors text-sm"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 resize-none transition-colors text-sm"
                 placeholder="Uma breve descrição do artigo que aparecerá nos cards..."
               />
               <p className="text-gray-400 text-xs mt-1">{form.summary.length}/300 caracteres</p>
             </div>
 
             {/* Content */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
               <label className="block text-sm font-semibold text-gray-700 mb-2">
                 Conteúdo completo *
               </label>
@@ -205,23 +204,23 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
                     {hint}
                   </button>
                 ))}
-                <span className="text-xs text-gray-400 ml-1 self-center">Use ## para título, **texto** para negrito</span>
+                <span className="text-xs text-gray-400 ml-1 self-center hidden sm:inline">Use ## para título, **texto** para negrito</span>
               </div>
               <textarea
                 required
-                rows={20}
+                rows={16}
                 value={form.content}
                 onChange={(e) => setForm({ ...form, content: e.target.value })}
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 resize-none font-mono text-sm transition-colors"
+                className="w-full px-3 sm:px-4 py-2.5 sm:py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 resize-none font-mono text-sm transition-colors"
                 placeholder="## Introdução&#10;&#10;Escreva o conteúdo completo do artigo aqui...&#10;&#10;## Seção 1&#10;&#10;Conteúdo da seção..."
               />
             </div>
           </div>
 
           {/* Sidebar */}
-          <div className="space-y-5">
+          <div className="space-y-4 sm:space-y-5">
             {/* Publish Settings */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
               <h3 className="font-semibold text-gray-900 mb-4">Publicação</h3>
               <div className="space-y-3">
                 <label className="flex items-center gap-3 cursor-pointer">
@@ -270,7 +269,7 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
             </div>
 
             {/* Category */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
                 <Tag className="w-4 h-4 text-green-600" />
                 Categoria
@@ -294,7 +293,7 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
             </div>
 
             {/* Image */}
-            <div className="bg-white rounded-xl p-6 shadow-sm border border-gray-100">
+            <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-green-600" />
                 Imagem de capa (URL)
@@ -303,7 +302,7 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
                 type="url"
                 value={form.image_url}
                 onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-                className="w-full px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 text-sm transition-colors"
+                className="w-full px-3 sm:px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 text-sm transition-colors"
                 placeholder="https://exemplo.com/imagem.jpg"
               />
               {form.image_url && (

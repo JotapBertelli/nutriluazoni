@@ -1,43 +1,10 @@
-import { Leaf } from 'lucide-react'
-import Link from 'next/link'
+import AdminLayout from '@/components/AdminLayout'
 import PostForm from '@/components/PostForm'
 
 export default function NovoArtigoPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex">
-      {/* Sidebar */}
-      <aside className="w-60 bg-green-900 text-white fixed h-full flex flex-col">
-        <div className="p-6 border-b border-green-800">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-green-700 rounded-full flex items-center justify-center">
-              <Leaf className="w-4 h-4 text-white" />
-            </div>
-            <div>
-              <p className="font-semibold text-sm" style={{ fontFamily: 'Playfair Display, serif' }}>Dra. Luazoni</p>
-              <p className="text-green-400 text-xs">Painel Admin</p>
-            </div>
-          </div>
-        </div>
-        <nav className="flex-1 p-4">
-          <p className="text-green-500 text-xs font-semibold uppercase tracking-wider mb-3 px-3">Menu</p>
-          <div className="space-y-1">
-            <Link
-              href="/nutri-admin/dashboard"
-              className="flex items-center gap-3 px-3 py-2.5 text-green-200 hover:bg-green-800 hover:text-white rounded-lg text-sm font-medium transition-colors"
-            >
-              Dashboard
-            </Link>
-            <div className="flex items-center gap-3 px-3 py-2.5 bg-green-800 text-white rounded-lg text-sm font-medium">
-              + Novo Artigo
-            </div>
-          </div>
-        </nav>
-      </aside>
-
-      {/* Content */}
-      <main className="ml-60 flex-1 p-8">
-        <PostForm />
-      </main>
-    </div>
+    <AdminLayout activeItem="novo-artigo">
+      <PostForm />
+    </AdminLayout>
   )
 }
