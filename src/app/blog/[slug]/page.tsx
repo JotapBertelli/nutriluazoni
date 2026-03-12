@@ -269,61 +269,6 @@ export default async function BlogPostPage({ params }: Props) {
                     </span>
                   </div>
                 )}
-
-                {/* Autor card */}
-                <div className="mt-10 bg-gradient-to-br from-green-50 to-emerald-50 rounded-2xl p-6 sm:p-8 border border-green-100">
-                  <div className="flex items-start gap-4 sm:gap-5">
-                    <div className="w-14 h-14 sm:w-16 sm:h-16 bg-green-700 rounded-full flex items-center justify-center shrink-0">
-                      <Leaf className="w-7 h-7 text-white" />
-                    </div>
-                    <div>
-                      <p className="text-xs font-semibold text-green-600 uppercase tracking-wider mb-1">Sobre a autora</p>
-                      <h3 className="text-lg font-bold text-green-900 mb-2" style={{ fontFamily: 'Playfair Display, serif' }}>
-                        Dra. Luazoni
-                      </h3>
-                      <p className="text-gray-600 text-sm leading-relaxed">
-                        Nutricionista graduada com CRN-3: 23.338. Especialista em nutrição funcional e comportamento alimentar.
-                        Atende presencialmente em Penápolis — SP, com foco em resultados sustentáveis e qualidade de vida.
-                      </p>
-                      <a
-                        href="/#contato"
-                        className="inline-flex items-center gap-2 mt-4 text-sm font-semibold text-green-700 hover:text-green-600 transition-colors"
-                      >
-                        Agendar consulta →
-                      </a>
-                    </div>
-                  </div>
-                </div>
-
-                {/* CTA */}
-                <div className="mt-8 relative overflow-hidden bg-green-900 rounded-2xl p-8 sm:p-10 text-center">
-                  <div className="absolute inset-0 opacity-10">
-                    <div className="absolute -top-8 -right-8 w-40 h-40 bg-green-400 rounded-full" />
-                    <div className="absolute -bottom-8 -left-8 w-32 h-32 bg-green-400 rounded-full" />
-                  </div>
-                  <div className="relative">
-                    <span className="inline-block text-green-400 text-xs font-bold uppercase tracking-widest mb-3">
-                      Transforme sua saúde
-                    </span>
-                    <h3
-                      className="text-2xl sm:text-3xl font-bold text-white mb-3"
-                      style={{ fontFamily: 'Playfair Display, serif' }}
-                    >
-                      Gostou deste conteúdo?
-                    </h3>
-                    <p className="text-green-200 mb-7 max-w-md mx-auto leading-relaxed">
-                      Receba orientações nutricionais personalizadas para o seu estilo de vida. Agende sua consulta agora.
-                    </p>
-                    <a
-                      href="/#contato"
-                      className="inline-flex items-center gap-2 bg-green-500 hover:bg-green-400 text-white px-8 py-3.5 rounded-full font-semibold transition-all hover:shadow-lg hover:shadow-green-900/40 text-sm"
-                    >
-                      Agendar consulta gratuita
-                      <ArrowRight className="w-4 h-4" />
-                    </a>
-                  </div>
-                </div>
-
                 {/* Voltar */}
                 <div className="mt-10 flex items-center justify-between">
                   <Link
