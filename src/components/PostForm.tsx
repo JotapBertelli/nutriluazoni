@@ -3,7 +3,7 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { ArrowLeft, Save, Eye, ImageIcon, Tag, FileText, CheckCircle } from 'lucide-react'
+import { ArrowLeft, Save, Eye, ImageIcon, Tag, FileText, CheckCircle, Upload, X, Loader2 } from 'lucide-react'
 import { Post } from '@/types'
 
 interface PostFormProps {
@@ -27,6 +27,10 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [activeTab, setActiveTab] = useState<'edit' | 'preview'>('edit')
+  const [uploading, setUploading] = useState(false)
+  const [uploadProgress, setUploadProgress] = useState('')
+  const [dragOver, setDragOver] = useState(false)
+  const [imageMode, setImageMode] = useState<'upload' | 'url'>(initialData?.image_url ? 'url' : 'upload')
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -66,6 +70,61 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
       if (line.trim() === '') return <br key={i} />
       return <p key={i} className="text-gray-700 leading-relaxed mb-3">{line}</p>
     })
+  }
+
+  const handleFileUpload = async (file: File) => {
+    if (file.size > 10 * 1024 * 1024) {
+      setError('Arquivo muito grande. Máximo permitido: 10MB.')
+      return
+    }
+
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
+    if (!allowedTypes.includes(file.type)) {
+      setError('Formato não suportado. Use JPG, PNG, WebP ou GIF.')
+      return
+    }
+
+    setUploading(true)
+    setUploadProgress('Enviando imagem...')
+    setError('')
+
+    try {
+      const formData = new FormData()
+      formData.append('file', file)
+
+      const res = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      })
+
+      const data = await res.json()
+
+      if (!res.ok) {
+        setError(data.error || 'Erro ao enviar imagem.')
+        return
+      }
+
+      setForm(prev => ({ ...prev, image_url: data.url }))
+      setUploadProgress('Imagem enviada!')
+      setTimeout(() => setUploadProgress(''), 2000)
+    } catch {
+      setError('Erro ao enviar imagem. Tente novamente.')
+    } finally {
+      setUploading(false)
+    }
+  }
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault()
+    setDragOver(false)
+    const file = e.dataTransfer.files[0]
+    if (file) handleFileUpload(file)
+  }
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) handleFileUpload(file)
+    e.target.value = ''
   }
 
   if (saved) {
@@ -296,27 +355,104 @@ export default function PostForm({ initialData, postId }: PostFormProps) {
             <div className="bg-white rounded-xl p-4 sm:p-6 shadow-sm border border-gray-100">
               <label className="block text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
                 <ImageIcon className="w-4 h-4 text-green-600" />
-                Imagem de capa (URL)
+                Imagem de capa
               </label>
-              <input
-                type="url"
-                value={form.image_url}
-                onChange={(e) => setForm({ ...form, image_url: e.target.value })}
-                className="w-full px-3 sm:px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 text-sm transition-colors"
-                placeholder="https://exemplo.com/imagem.jpg"
-              />
-              {form.image_url && (
-                <div className="mt-3 rounded-lg overflow-hidden h-32">
-                  <img src={form.image_url} alt="Prévia" className="w-full h-full object-cover" />
+
+              {/* Toggle upload/url */}
+              <div className="flex bg-gray-100 rounded-lg p-1 mb-3">
+                <button
+                  type="button"
+                  onClick={() => setImageMode('upload')}
+                  className={`flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors flex items-center justify-center gap-1.5 ${
+                    imageMode === 'upload' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  <Upload className="w-3 h-3" />
+                  Upload
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setImageMode('url')}
+                  className={`flex-1 px-3 py-1.5 rounded-md text-xs font-medium transition-colors ${
+                    imageMode === 'url' ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'
+                  }`}
+                >
+                  URL
+                </button>
+              </div>
+
+              {imageMode === 'upload' ? (
+                <div>
+                  <div
+                    onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+                    onDragLeave={() => setDragOver(false)}
+                    onDrop={handleDrop}
+                    className={`relative border-2 border-dashed rounded-lg p-4 text-center transition-colors cursor-pointer ${
+                      dragOver
+                        ? 'border-green-500 bg-green-50'
+                        : 'border-gray-200 hover:border-green-400 hover:bg-green-50/50'
+                    } ${uploading ? 'pointer-events-none opacity-60' : ''}`}
+                    onClick={() => document.getElementById('image-upload')?.click()}
+                  >
+                    <input
+                      id="image-upload"
+                      type="file"
+                      accept="image/jpeg,image/png,image/webp,image/gif"
+                      className="hidden"
+                      onChange={handleFileSelect}
+                      disabled={uploading}
+                    />
+                    {uploading ? (
+                      <div className="py-2">
+                        <Loader2 className="w-6 h-6 text-green-600 animate-spin mx-auto mb-2" />
+                        <p className="text-xs text-green-700 font-medium">{uploadProgress}</p>
+                      </div>
+                    ) : (
+                      <div className="py-2">
+                        <Upload className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                        <p className="text-xs text-gray-600 font-medium">Clique ou arraste uma imagem</p>
+                        <p className="text-xs text-gray-400 mt-1">JPG, PNG, WebP ou GIF (máx. 10MB)</p>
+                      </div>
+                    )}
+                  </div>
+                  {uploadProgress && !uploading && (
+                    <p className="text-xs text-green-600 font-medium mt-2">{uploadProgress}</p>
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <input
+                    type="url"
+                    value={form.image_url}
+                    onChange={(e) => setForm({ ...form, image_url: e.target.value })}
+                    className="w-full px-3 sm:px-4 py-2.5 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-300 focus:border-green-400 text-gray-900 text-sm transition-colors"
+                    placeholder="https://exemplo.com/imagem.jpg"
+                  />
+                  <p className="text-xs text-gray-400 mt-2">
+                    Dica: Use{' '}
+                    <a href="https://unsplash.com" target="_blank" className="text-green-600 hover:underline">
+                      Unsplash
+                    </a>{' '}
+                    para imagens gratuitas
+                  </p>
                 </div>
               )}
-              <p className="text-xs text-gray-400 mt-2">
-                Dica: Use{' '}
-                <a href="https://unsplash.com" target="_blank" className="text-green-600 hover:underline">
-                  Unsplash
-                </a>{' '}
-                para imagens gratuitas
-              </p>
+
+              {/* Preview da imagem */}
+              {form.image_url && (
+                <div className="mt-3 relative group">
+                  <div className="rounded-lg overflow-hidden h-32">
+                    <img src={form.image_url} alt="Prévia" className="w-full h-full object-cover" />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => setForm({ ...form, image_url: '' })}
+                    className="absolute top-1.5 right-1.5 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </div>
+              )}
             </div>
           </div>
         </form>
